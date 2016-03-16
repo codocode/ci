@@ -1,0 +1,29 @@
+1.
+navigate to "C:/Windows/System32/drivers/etc" and open the "hosts" file
+
+127.0.0.1   dev.hallohallohome.local
+
+2. 
+C:/wamp/bin/apache/Apache2.2.21/conf/" and Open "httpd.conf"
+
+At line 467, under "# Virtual hosts", uncomment (remove the hashtag [#]) before the line "Include conf/extra/httpd-vhosts.conf":
+3.
+Go to "C:/wamp/bin/apache/Apache2.2.21/conf/extra" and open the file "httpd.vhosts.conf".
+
+<VirtualHost *:80>
+    ServerName dev.hallohallohome.local
+    DocumentRoot "E:/wamp/www/c139-w_job/hhjv4/"
+
+    SetEnv APPLICATION_ENV "development"
+
+    <Directory "E:/wamp/www/c139-w_job/hhjv4/">
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>
+
+4. restart
+
+5. navigate now the url "dev.hallohallohome.local"
