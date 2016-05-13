@@ -3,7 +3,7 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  
 require_once(APPPATH.'third_party/smarty/libs/Smarty.class.php');
- 
+
 class CI_Smarty extends Smarty {
  
     function __construct()

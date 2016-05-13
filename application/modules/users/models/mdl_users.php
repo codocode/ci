@@ -1,8 +1,11 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 class Mdl_users extends CI_Model {
 
+	//private 
+
 	function __construct() {
 		parent::__construct();
+		$this->table_name = 'users';
 	}
 
 	function get_table() {
@@ -104,4 +107,57 @@ class Mdl_users extends CI_Model {
 
 		return $query->row_array();
 	}
+
+
+	public function _get($page_no = 1, $limit_per_page = 10, $data = array())
+    {
+
+
+        $limit_per_page = $limit_per_page>0 ? $limit_per_page : 10;
+        $start = $page_no > 1 ? ($page_no-1)*$limit_per_page : 0;
+
+        $this->db->select('SQL_CALC_FOUND_ROWS *', FALSE);
+        $this->db->from($this->table_name);
+
+        // pagination
+        $this->db->limit($limit_per_page, $start);
+
+        // search 
+     /*   if (!empty($data['content'])) {
+            $this->db->like('messages.message', $data['content'], 'both'); 
+        }
+        if (!empty($data['voter_id'])) {
+            $this->db->where('messages.voter_id',$data['voter_id']); 
+        }
+        if (!empty($data['voter_name'])) {
+            $this->db->having('voter_name like', '%'.$data['voter_name'].'%'); 
+        }
+        if (!empty($data['status'])) {
+            $this->db->where('messages.status', $data['status']);
+        }*/
+
+        //sorting
+        //$this->db->order_by('timestamp', "desc");
+
+        $query = $this->db->get();
+
+        //die($this->db->last_query());
+
+        if ($query->num_rows() > 0) {
+
+            $query2 = $this->db->query('SELECT FOUND_ROWS() AS `count`');
+
+            $response['records'] = $query->result();
+            $response["total"] = $query2->row()->count;
+
+            $response['from'] = $start+1;
+            $sum = ($start+$limit_per_page);
+            $response['to'] = $sum > $response["total"] ? $response["total"] : $sum;
+
+            return $response;
+        }
+
+        return false;
+
+    }
 }

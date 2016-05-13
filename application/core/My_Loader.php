@@ -6,6 +6,41 @@ require APPPATH."third_party/MX/Loader.php";
 
 require_once(APPPATH.'third_party/smarty/smarty.php');
 
+/*
+class CI_Smarty extends Smarty {
+ 
+    function __construct()
+    {
+        parent::__construct();
+        //$this->setTemplateDir(APPPATH.'views/templates');
+        
+        $this->setTemplateDir(APPPATH.'modules/'); //$this->setTemplateDir(APPPATH.'views/');
+        $this->setCompileDir(APPPATH.'views/templates_c');
+        $this->setConfigDir(APPPATH.'libraries/smarty/configs');
+        $this->setCacheDir(APPPATH.'libraries/smarty/cache');
+ 
+        $this->assign( 'APPPATH', APPPATH );
+        $this->assign( 'BASEPATH', BASEPATH );
+        if ( method_exists( $this, 'assignByRef') )
+        {
+            $ci =& get_instance();
+            $this->assignByRef("ci", $ci);
+        }
+        $this->force_compile = 1;
+        $this->caching = true;
+        $this->cache_lifetime = 120;
+ 
+    }
+ 
+    function view($template_name) {
+        if (strpos($template_name, '.') === FALSE && 
+        strpos($template_name, ':') === FALSE) {
+            $template_name .= '.tpl';
+        }
+        parent::display($template_name);
+    }
+}*/
+
 class My_Loader extends MX_Loader {
 
 	var $ci;
@@ -15,7 +50,7 @@ class My_Loader extends MX_Loader {
 	function __construct() {
 		
 		parent::__construct();
-		$this->smarty = new CI_Smarty;
+		$this->smarty = new CI_Smarty; //$this->smarty = new CI_Smarty;
 
 		$this->ci =& get_instance();
 	}
@@ -33,14 +68,17 @@ class My_Loader extends MX_Loader {
         }
 
         //fn_print_r($this->_module, $this->_ci_view_paths, $path, $view);
-
+//fn_print_die(APP_AREA);
         // Validation Rules
-        define('APP_AREA', 'A');
+//        define('APP_AREA', 'A');
+
+        $file_path = $path . $view;
+
         if (defined('APP_AREA')) {
             
             $required_folder = APP_AREA == 'A' ? 'views/admin/' : 'views/frontend/';
 
-            if (stripos($path,'views/admin/') === false) {
+            if (stripos($file_path, $required_folder) === false) {
                 fn_print_die('Invalid Area');
             }
         }
@@ -66,10 +104,10 @@ class My_Loader extends MX_Loader {
 
         if ($return == TRUE) {
             ob_start();
-            $this->smarty->view($path.$view);
+            $this->smarty->view($file_path);
             return ob_get_clean();
         } else {
-            $this->smarty->view($path.$view);
+            $this->smarty->view($file_path);
         }
 
 

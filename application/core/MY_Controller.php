@@ -124,7 +124,7 @@ class My_Controller_Admin extends My_Controller_Common {
 
         parent::__construct();
 
-        $this->fn_is_logged_in('A');
+        //$this->fn_is_logged_in('A');
 
         //$this->view_area = 'admin';
         define('APP_AREA', 'A');

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Admin_users extends MX_Controller {
+class Admin_users extends My_Controller_Admin {
 
     public $submit_status = false;
 
@@ -10,9 +10,56 @@ class Admin_users extends MX_Controller {
         $this->model_name = 'mdl_users';
     }
 
-    public function index()
+    public function index($p = 'ppp', $p2 = 'ppp2')
     {
-        $this->load->view('users/views/admin/index');
+        //fn_print_die('fuck', $p, $p2);
+        //$this->load->view('users/views/admin/index');
+        $this->manage($p);
+    }
+
+
+    public function manage($page_no = 1)
+    {
+
+
+        $this->load->library("pagination");
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+
+        // pagination
+        $limit_per_page = $this->input->get('limit_per_page', TRUE);
+        $limit_per_page = $limit_per_page > 0 ? $limit_per_page : 10;
+
+        // search
+        $data['content'] = $this->input->get('content', TRUE);
+        $data['voter_id'] = $this->input->get('voter_id', TRUE);
+        $data['voter_name'] = $this->input->get('voter_name', TRUE);
+        $data['status'] = $this->input->get('status', TRUE);
+
+       // $this->_filter_search_data($data);
+
+        $page_no = $page_no ? $page_no : 1;
+
+        $get_data = $this->_get($page_no, $limit_per_page, $data);
+
+        $config = $this->config->item('pagination');
+        $config["base_url"] = base_url() . 'admin/users/manage/';
+        $config["total_rows"] = $get_data['total'];
+        $config["per_page"] = $limit_per_page;
+        $config['uri_segment'] = 4;
+
+        $this->pagination->initialize($config);
+
+        $data['news'] = $get_data['records'];
+        $data['pagination'] = $this->pagination->create_links();
+        $data['stats'] = array('from' => $get_data['from'], 'to' => $get_data['to'], 'total' => $get_data['total']);
+        $data['status_vals'] = array('D' => 'Denied', 'A' => 'Approved', 'P' => 'Pending');
+
+        $this->load->view('users/views/admin/index', $data);
+
+        $data = array('var1' => 'variable 1', 'var2' => 'variable 2');
+        $this->load->view('admin/test', $data);
+
     }
 
     public function create()
@@ -101,6 +148,13 @@ $this->admin->admin_panel2($data);*/
             return $data;
         }
 
+
+    private function _get($page_no = 1, $limit_per_page = 10, $data = array())
+    {
+        $this->load->model('mdl_users');
+        return $this->mdl_users->_get($page_no, $limit_per_page, $data);
+
+    }
 
     function get($order_by) {
         $this->load->model('mdl_users');

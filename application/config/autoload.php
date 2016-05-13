@@ -79,7 +79,7 @@ $autoload['helper'] = array('url','common');
 |
 */
 
-$autoload['config'] = array();
+$autoload['config'] = array('my_settings');
 
 
 /*
