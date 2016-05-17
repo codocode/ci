@@ -19,9 +19,7 @@ class My_Controller_Common extends CI_Controller {
         }
 
         define('IS_TEMPLATE', 1);
-
         
-
     }
 
     protected function fn_is_logged_in($user_type = '')
