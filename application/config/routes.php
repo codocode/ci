@@ -51,8 +51,8 @@ $route['default_controller'] = "login";
 HMVC Admin
 */
 //$route['admin/(:any)'] = '$1/admin_$1/index'; // working 
-$route['admin/([a-zA-Z_]+)'] = '$1/admin_$1/index'; // if include dash "-" then not working
-$route['admin/([a-zA-Z_-]+)/(:any)'] = '$1/admin_$1/$2';
+$route['admin/([a-zA-Z_]+)'] = '$1/backend_$1/index'; // if include dash "-" then not working
+$route['admin/([a-zA-Z_-]+)/(:any)'] = '$1/backend_$1/$2';
 
 $route['admin/login'] = 'admin/login';
 $route['admin/logout'] = 'admin/logout';

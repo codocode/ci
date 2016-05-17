@@ -4,7 +4,7 @@ session_start(); //we need to call PHP's session object to access it through CI
 
 
 
-class My_Controller_Common extends CI_Controller {
+class My_Controller extends CI_Controller {
     public $model_name; // HMVC
 
     function __construct() {
@@ -19,7 +19,7 @@ class My_Controller_Common extends CI_Controller {
         }
 
         define('IS_TEMPLATE', 1);
-        
+
     }
 
     protected function fn_is_logged_in($user_type = '')
@@ -116,7 +116,7 @@ class My_Controller_Common extends CI_Controller {
     }
 }
 
-class My_Controller_Admin extends My_Controller_Common {
+class Backend_Controller extends My_Controller {
 
     function __construct() {
 
@@ -130,22 +130,7 @@ class My_Controller_Admin extends My_Controller_Common {
 
 }
 
-class My_Controller_User extends My_Controller_Common {
-
-    function __construct() {
-
-        parent::__construct();
-
-        $this->fn_is_logged_in('U');
-
-        //$this->view_area = 'frontend';
-        define('APP_AREA', 'U');
-    }
-
-}
-
-// Public = No Log in
-class My_Controller_Public extends My_Controller_Common {
+class Frontend_Controller extends My_Controller {
 
     function __construct() {
 
