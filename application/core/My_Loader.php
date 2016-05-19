@@ -43,7 +43,7 @@ class My_Loader extends MX_Loader {
 
         if (defined('APP_AREA')) {
             
-            $required_folder = APP_AREA == 'A' ? 'views/admin/' : 'views/frontend/';
+            $required_folder = APP_AREA == 'A' ? 'views/backend/' : 'views/frontend/';
 
             if (stripos($file_path, $required_folder) === false) {
                 fn_print_die('Invalid Area');

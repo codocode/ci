@@ -30,9 +30,8 @@
         <div class="container">
             <div id="content">
 
-
-
               {* 2nd way $dis->view($view_file)*}
+              {assign var="view_file" value="`$module`/`$view_file`"}
               {$this->load->view($view_file)}
 
             </div>

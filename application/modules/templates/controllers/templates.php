@@ -7,9 +7,9 @@ class Templates extends MX_Controller
 		parent::__construct();
 	}
 
-	function admin_panel2($data)
+	function admin_panel($data = array())
 	{
-		die('FUCK2');
-		//$this->load->view($view_file, $data);
+
+		$this->load->view('backend/admin_view', $data);
 	}
 }

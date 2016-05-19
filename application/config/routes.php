@@ -42,7 +42,8 @@
 $route['404_override'] = '';
 
     
-$route['default_controller'] = "login";
+$route['default_controller'] = "auth/login";
+
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
 
@@ -54,7 +55,11 @@ HMVC Admin
 $route['admin/([a-zA-Z_]+)'] = '$1/backend_$1/index'; // if include dash "-" then not working
 $route['admin/([a-zA-Z_-]+)/(:any)'] = '$1/backend_$1/$2';
 
-$route['admin/login'] = 'admin/login';
+$route['admin'] = 'auth/backend_auth/login';
+$route['admin/login'] = 'auth/backend_auth/login';
+
 $route['admin/logout'] = 'admin/logout';
 $route['admin/([a-zA-Z_-]+)'] = '$1/admin/index';
-$route['admin'] = 'admin';
+
+
+$route['auth/login'] = 'auth/login';

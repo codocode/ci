@@ -4,8 +4,10 @@ class Mdl_users extends CI_Model {
 	//private 
 
 	function __construct() {
+
 		parent::__construct();
 		$this->table_name = 'users';
+
 	}
 
 	function get_table() {
@@ -159,5 +161,29 @@ class Mdl_users extends CI_Model {
 
         return false;
 
+    }
+
+    public function login($username = '', $password = '', $user_type = 'U')
+    {
+
+
+        $this->db->select('id, username, password, user_type');
+        $this->db->from('users');
+        $this->db->where('username', $username);
+        $this->db->where('password', $password);
+        $this->db->where('user_type', $user_type);
+        $this->db->limit(1);
+
+         $query = $this->db->get();
+
+        if ($query->num_rows() == 1) {
+
+            return $query->row_array(); //$query->result(); //array
+
+        } else {
+
+            return false;
+
+        }
     }
 }

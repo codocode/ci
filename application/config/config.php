@@ -26,7 +26,7 @@ $config['base_url']	= '';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = defined('APP_AREA') && APP_AREA == 'A' ? 'admin.php' : 'index.php';
 
 /*
 |--------------------------------------------------------------------------

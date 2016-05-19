@@ -13,7 +13,7 @@ class Backend_users extends Backend_Controller {
     public function index($p = 'ppp', $p2 = 'ppp2')
     {
         //fn_print_die('fuck', $p, $p2);
-        //$this->load->view('users/views/admin/index');
+        //$this->load->view('users/views/backend/index');
         $this->manage($p);
     }
 
@@ -55,10 +55,10 @@ class Backend_users extends Backend_Controller {
         $data['stats'] = array('from' => $get_data['from'], 'to' => $get_data['to'], 'total' => $get_data['total']);
         $data['status_vals'] = array('D' => 'Denied', 'A' => 'Approved', 'P' => 'Pending');
 
-        $this->load->view('users/views/admin/index', $data);
+        $this->load->view('users/views/backend/index', $data);
 
         $data = array('var1' => 'variable 1', 'var2' => 'variable 2');
-        $this->load->view('admin/test', $data);
+        $this->load->view('backend/test', $data);
 
     }
 
@@ -124,7 +124,7 @@ $this->admin->admin_panel2($data);*/
             $data['module'] = 'admin/users'; //$data['module'] = $this->module_name;
             //$data['view_file'] = 'form';
             //$this->load->view('users/views/admin/form', $data);
-            echo $this->load->view('admin/form', $data, TRUE);
+            echo $this->load->view('backend/form', $data, TRUE);
         }
 
         function get_data_from_post($update_id = 0) {
@@ -221,4 +221,14 @@ $this->admin->admin_panel2($data);*/
 
         return $this->$model_name->get_row($id, $select);
     }
+
+    function login($username = '', $password = '', $user_type = 'U') {
+
+        $model_name = $this->model_name;
+        $this->load->model($model_name);
+
+        return $this->$model_name->login($username, $password, $user_type);
+
+    }
+    
 }

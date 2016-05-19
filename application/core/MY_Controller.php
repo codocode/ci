@@ -4,7 +4,7 @@ session_start(); //we need to call PHP's session object to access it through CI
 
 
 
-class My_Controller extends CI_Controller {
+class My_Controller extends MX_Controller {
     public $model_name; // HMVC
 
     function __construct() {
@@ -18,17 +18,33 @@ class My_Controller extends CI_Controller {
             define('IS_AJAX', 1);
         }
 
-        define('IS_TEMPLATE', 1);
+        //define('IS_TEMPLATE', 1);
+//         $this->load->library('My_image');
+// $src = 'J:/www/git/ci/Lighthouse.jpg';
+//         $this->my_image->saveImage('J:/www/git/ci', 'timestamp', 'png', $src, 50, 50, '#ffffff');
 
+        //$this->fn_logout();
     }
 
     protected function fn_is_logged_in($user_type = '')
     {
     
-        $r_login_page = $user_type == 'A' ? 'admin/login' : 'admin/login';
-        $r_home_page = $user_type == 'A' ? 'admin/home' : 'home';
+        if ($user_type == 'A') {
 
-        if ($this->router->fetch_class() == 'login') { // class = controller
+            $auth_controller = 'backend_auth';
+            $r_login_page = 'admin/login';
+            $r_home_page = 'admin/home';
+
+        } else {
+
+            $auth_controller = 'auth';
+            $r_login_page = 'login';
+            $r_home_page = 'home';
+
+        }
+        
+
+        if ($this->router->fetch_class() == 'backend_auth') { // class = controller
 
             if ($this->session->userdata('logged_in')) {
 
@@ -76,7 +92,7 @@ class My_Controller extends CI_Controller {
         $this->session->unset_userdata('logged_in');
         //session_destroy();
         //$this->session->sess_destroy();
-        redirect('home', 'refresh');
+        redirect('admin', 'refresh');
         exit;
     }
 /*
@@ -120,12 +136,20 @@ class Backend_Controller extends My_Controller {
 
     function __construct() {
 
+        if (!defined('APP_AREA') || APP_AREA != 'A') { 
+            die('Backend Controller - Invalid Area');
+        }
+
         parent::__construct();
 
-        //$this->fn_is_logged_in('A');
+       $this->fn_is_logged_in('A');
+
+        
 
         //$this->view_area = 'admin';
-        define('APP_AREA', 'A');
+/*        if (!defined('APP_AREA')) { 
+            define('APP_AREA', 'A');
+        }*/
     }
 
 }
@@ -134,12 +158,18 @@ class Frontend_Controller extends My_Controller {
 
     function __construct() {
 
+        if (!defined('APP_AREA') || APP_AREA != 'U') { 
+            die('Frontend Controller - Invalid Area');
+        }
+
         parent::__construct();
 
         //$this->fn_is_logged_in('U');
 
         //$this->view_area = 'frontend';
-        define('APP_AREA', 'U');
+/*        if (!defined('APP_AREA')) { 
+            define('APP_AREA', 'U');
+        }*/
     }
 
 }
