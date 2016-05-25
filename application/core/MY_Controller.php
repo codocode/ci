@@ -24,6 +24,19 @@ class My_Controller extends MX_Controller {
 //         $this->my_image->saveImage('J:/www/git/ci', 'timestamp', 'png', $src, 50, 50, '#ffffff');
 
         //$this->fn_logout();
+
+//fn_print_r($_SESSION);
+        if (!defined('CONTROLLER')) { 
+            define('CONTROLLER', $this->router->fetch_class());
+            define('METHOD', $this->router->fetch_method());
+        }
+
+        if (!defined('USER_ID')) { 
+
+            $user_data = $this->session->userdata('logged_in');
+
+            define('USER_ID', !empty($user_data['user_id']) ? $user_data['user_id'] : 0);
+        }
     }
 
     protected function fn_is_logged_in($user_type = '')
@@ -44,7 +57,7 @@ class My_Controller extends MX_Controller {
         }
         
 
-        if ($this->router->fetch_class() == 'backend_auth') { // class = controller
+        if ($this->router->fetch_class() == $auth_controller) { // class = controller
 
             if ($this->session->userdata('logged_in')) {
 
@@ -89,7 +102,19 @@ class My_Controller extends MX_Controller {
 
     function fn_logout()
     {
-        $this->session->unset_userdata('logged_in');
+
+        if ($this->session->userdata('logged_in')) {
+
+            Modules::run('logs/addLog', 'requests', 'S', 'logout_success');
+
+            $this->session->unset_userdata('logged_in');
+
+        } else {
+
+            Modules::run('logs/addLog', 'requests', 'W', 'logout_failed');
+
+        }
+       
         //session_destroy();
         //$this->session->sess_destroy();
         redirect('admin', 'refresh');
@@ -142,7 +167,7 @@ class Backend_Controller extends My_Controller {
 
         parent::__construct();
 
-       $this->fn_is_logged_in('A');
+        $this->fn_is_logged_in('A');
 
         
 

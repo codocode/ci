@@ -32,7 +32,7 @@ class Mdl_users extends CI_Model {
 
 	function get_where($id) {
 		$table = $this->get_table();
-		$this->db->where('id', $id);
+		$this->db->where('user_id', $id);
 		$query=$this->db->get($table);
 		return $query;
 	}
@@ -51,13 +51,13 @@ class Mdl_users extends CI_Model {
 
 	function _update($id, $data) {
 		$table = $this->get_table();
-		$this->db->where('id', $id);
+		$this->db->where('user_id', $id);
 		$this->db->update($table, $data);
 	}
 
 	function _delete($id) {
 		$table = $this->get_table();
-		$this->db->where('id', $id);
+		$this->db->where('user_id', $id);
 		$this->db->delete($table);
 	}
 
@@ -78,7 +78,7 @@ class Mdl_users extends CI_Model {
 
 	function get_max() {
 		$table = $this->get_table();
-		$this->db->select_max('id');
+		$this->db->select_max('user_id');
 		$query = $this->db->get($table);
 		$row=$query->row();
 		$id=$row->id;
@@ -94,7 +94,7 @@ class Mdl_users extends CI_Model {
 	/* MINE */
 	public $navigate_data = true;
 	public $table_name = 'users';
-	public $primary_id = 'id';
+	public $primary_id = 'user_id';
 	function get_row($id, $select = '*')
 	{
 		$select = !empty($select) && $select != '*' ? $this->primary_id.', '.$select : '*';
@@ -167,7 +167,7 @@ class Mdl_users extends CI_Model {
     {
 
 
-        $this->db->select('id, username, password, user_type');
+        $this->db->select('user_id, username, password, user_type');
         $this->db->from('users');
         $this->db->where('username', $username);
         $this->db->where('password', $password);

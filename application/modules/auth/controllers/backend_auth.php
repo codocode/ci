@@ -2,71 +2,74 @@
 
 class Backend_auth extends Backend_Controller {
 
-	function __construct()
-	{
-		parent::__construct();
+    function __construct()
+    {
+        parent::__construct();
             // ATTEMPT -  create session attemp if not exists
         define('ATTEMPT_FLAG', 1);
         define('ATTEMPT_LIMIT_NO', 4);
         define('ATTEMPT_TIME_LOCK', 60); // 3 mins
         define('ATTEMPT_LOCK_MESSAGE', 'Sorry your account has been locked out, please contact the administrator'); // access denied for 30 seconds
 
-	}
+    }
 
-	function index()
-	{
-		$this->login();
-		
-	}
+    function index()
+    {
 
-	function login()
-	{
-		
-		$data = $this->remember_me_data(); //optional
+        $this->login();
+        
+    }
 
-		$this->load->helper(array('form'));
+    function login()
+    {
+
+        $data = $this->remember_me_data(); //optional
+
+        $this->load->helper(array('form'));
 
         //$data['template'] = 'public';
-		$this->load->view('auth/views/backend/login_view', $data); //change
+        $this->load->view('auth/views/backend/login_view', $data); //change
         /*$data['view_file'] = 'login/login_view';
         $this->my_view($data);*/
-	}
+    }
 
-	function submit()
+    function submit()
     {
         
 
-    	if ($_SERVER['REQUEST_METHOD'] == 'POST' && $this->input->post('user_log_in') == 'Login') {
-    		
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && $this->input->post('user_log_in') == 'Login') {
+            
 
-	        //This method will have the credentials validation
-	        $this->load->library('form_validation');
+            //This method will have the credentials validation
+            $this->load->library('form_validation');
 
-	        $this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean');
-	        $this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|callback_check_database');
+            $this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean');
+            $this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|callback_check_database');
 
-	        if ($this->form_validation->run($this) == FALSE) {
+            if ($this->form_validation->run($this) == FALSE) {
 
-	            //Field validation failed.  User redirected to login page
-	            $this->load->view('backend/login_view');  //change
+                Modules::run('logs/addLog', 'form', 'E', 'login_failed');
+                //Field validation failed.  User redirected to login page
+                $this->load->view('backend/login_view');  //change
 
-	        } else {
+            } else {
 
+               Modules::run('logs/addLog', 'form', 'S', 'login_success');
 
-                $this->remember_me_set();
+               $this->remember_me_set();
 
-	            //Go to private area
-                $user_data = $this->session->userdata('logged_in');
+                //Go to private area
+               $user_data = $this->session->userdata('logged_in');
 
                 redirect('admin/home', 'refresh'); //change
 
-	        }
+            }
 
-    	} else {
+        } else {
 
-    		$this->index();
+            $this->index();
 
-    	}
+        }
 
     }
     
@@ -77,7 +80,7 @@ class Backend_auth extends Backend_Controller {
 
     function check_database($password)
     {
-		
+        
 
         //Field validation succeeded.  Validate against database
         $username = $this->input->post('username');
@@ -93,25 +96,12 @@ class Backend_auth extends Backend_Controller {
         // $result = $this->user->login($username, $password, 'U');
 
         $password = $this->_ecrypt_password($password);
-		$result = Modules::run('users/backend_users/login', $username, $password, 'A');
+        $result = Modules::run('users/backend_users/login', $username, $password, 'A');
 
         if ($result) {
 
-            /*$sess_array = array();
-
-            foreach ($result as $row) { //TODO
-
-                $sess_array = array(
-                    'id' => $row->id,
-                    'username' => $row->username,
-                    'user_type' => $row->user_type
-                );
-
-                $this->session->set_userdata('logged_in', $sess_array);
-            }*/
-
              $sess_array = array(
-                'id' => $result['id'],
+                'user_id' => $result['user_id'],
                 'username' => $result['username'],
                 'user_type' => $result['user_type']
             );
@@ -135,6 +125,7 @@ class Backend_auth extends Backend_Controller {
 
     function logout()
     {
+        
         $this->fn_logout();
     }
 
@@ -162,7 +153,7 @@ class Backend_auth extends Backend_Controller {
 
                 $attempt_time = !empty($_SESSION['attempt'][$username]['attempt_time']) ? $_SESSION['attempt'][$username]['attempt_time'] : 0;
 
-                if ($attempt_time > 0 && time() > $attempt_time) {
+                if ($attempt_time >= 0 && time() > $attempt_time) {
 
                     $user_attempt = 0;
 
@@ -176,7 +167,9 @@ class Backend_auth extends Backend_Controller {
             }
 
         }
-        $_SESSION['attempt'][$username]['attempt_time'] = $user_attempt;
+
+        //$_SESSION['attempt'][$username]['attempt_time'] = $user_attempt;
+        $_SESSION['attempt'][$username]['attempt_no'] = $user_attempt;
         return true;
     }
 
